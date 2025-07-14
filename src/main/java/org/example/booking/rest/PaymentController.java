@@ -1,0 +1,28 @@
+package org.example.booking.rest;
+
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.example.booking.domain.payment.dto.response.IpnResponse;
+import org.example.booking.domain.payment.service.IpnHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/v1/payments")
+@Slf4j
+@RequiredArgsConstructor
+public class PaymentController {
+
+    private final IpnHandler ipnHandler;
+
+    @GetMapping("/vnpay_ipn")
+    IpnResponse processIpn(@RequestParam Map<String, String> params) {
+        log.info("VNPay IPN Request: {}", params);
+        return ipnHandler.process(params);
+    }
+}

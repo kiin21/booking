@@ -1,6 +1,9 @@
 package org.example.booking.domain.homestay.dto.request;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.example.booking.domain.booking.constant.AvailabilityStatus;
 
 import java.time.LocalDate;

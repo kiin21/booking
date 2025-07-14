@@ -15,39 +15,28 @@ import java.util.List;
 public interface HomestayRepository extends JpaRepository<Homestay, Long> {
 
     @Query(value = """
-            WITH cte AS (
-                SELECT
-                    ha.homestay_id AS homestay_id,
-                    ha.date AS date,
-                    ha.date - (ROW_NUMBER() OVER(PARTITION BY ha.homestay_id ORDER BY ha.date) * INTERVAL '1 days') AS group_id
-                FROM homestay_availabilities ha
-                JOIN homestays h ON h.id = ha.homestay_id
-                WHERE ha.status = :status
-            ),
-            consecutive_days AS (
-                SELECT
-                    homestay_id,
-                    MIN(date) AS start_date,
-                    MAX(date) AS end_date,
-                    MAX(date) - MIN(date) + 1 AS days
-                FROM cte
-                GROUP BY homestay_id, group_id
-                HAVING MIN(date) <= DATE :checkinDate AND DATE :checkoutDate <= MAX(date)
-            ),
-            destination AS (
+            WITH destination AS (
                 SELECT ST_Transform(ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326), 3857) AS geom
+            ),
+            available_homestays AS (
+                SELECT ha.homestay_id, avg(ha.price) as night_amount, SUM(ha.price) AS total_amount
+                FROM homestays_availabilities ha
+                WHERE ha.status = :status
+                  AND ha.date BETWEEN :checkinDate AND :checkoutDate
+                GROUP BY ha.homestay_id
+                HAVING COUNT(ha.date) = :nights + 1
             )
-            SELECT h.id, cd.start_date, cd.end_date, h.geom, d.geom, h.geom <-> d.geom AS distant, cd.days
+            SELECT h.id, h.name, h.description, h.images, h.bedrooms, available.night_amount,
+                   available.total_amount, h.address, h.longitude, h.latitude
             FROM homestays h
-                CROSS JOIN destination d
-                JOIN consecutive_days cd ON h.id = cd.homestay_id
-            WHERE ST_DWithin(h.geom, d.geom, :radius)
-              AND h.guests >= :guests
+            INNER JOIN available_homestays available ON h.id = available.homestay_id
+            JOIN destination d ON TRUE
+            WHERE ST_DWithin(h.geom, d.geom, :radius) AND h.guests >= :guests
             ORDER BY h.geom <-> d.geom;
             """, nativeQuery = true)
     List<HomestayDTO> searchHomestay(@Param("longitude") Double longitude,
                                      @Param("latitude") Double latitude,
-                                     @Param("radius") Double radius,
+                                     @Param("radius") Double radius_meters,
                                      @Param("checkinDate") LocalDate checkinDate,
                                      @Param("checkoutDate") LocalDate checkoutDate,
                                      @Param("nights") Integer nights,

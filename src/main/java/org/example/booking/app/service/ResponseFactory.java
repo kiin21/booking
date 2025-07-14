@@ -17,9 +17,8 @@ public class ResponseFactory {
     @Value("${spring.application.name}")
     String appName;
 
-
     public ResponseDTO response(ResponseCode responseCode) {
-        var meta = Meta.builder()
+        Meta meta = Meta.builder()
                 .status(responseCode.getType())
                 .serviceId(appName)
                 .build();
@@ -28,7 +27,7 @@ public class ResponseFactory {
     }
 
     public ResponseDTO response(Object payload) {
-        var meta = Meta.builder()
+        Meta meta = Meta.builder()
                 .status(ResponseCode.SUCCESS.getType())
                 .serviceId(appName)
                 .build();
@@ -36,9 +35,17 @@ public class ResponseFactory {
         return new ResponseDTO(meta, payload);
     }
 
+    public ResponseDTO response(ResponseCode responseCode, Object payload) {
+        Meta meta = Meta.builder()
+                .status(responseCode.getType())
+                .serviceId(appName)
+                .build();
+
+        return new ResponseDTO(meta, payload);
+    }
 
     public ResponseDTO invalidParams(Collection<ApiError> errors) {
-        var meta = Meta.builder()
+        Meta meta = Meta.builder()
                 .status(ResponseCode.INVALID_PARAMS.getType())
                 .serviceId(appName)
                 .errors(errors)

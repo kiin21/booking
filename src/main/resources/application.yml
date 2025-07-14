@@ -8,7 +8,15 @@ spring:
     url: jdbc:postgresql://localhost:5432/booking_database
     username: user
     password: pass
-    jpa:
-      show-sql: true
-      hibernate:
-        ddl-auto: none
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+payment:
+  vnpay:
+    tmn-code: ${VNPAY_TMN_CODE:-YOUR_TMN_CODE}
+    init-payment-url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+    return-url: https://booking.com/order/%s/status
+    timeout: 15 # in minutes
+    secret-key: ${VNPAY_SECRET_KEY:-YOUR_SECRET_KEY}

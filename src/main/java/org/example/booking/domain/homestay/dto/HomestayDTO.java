@@ -24,8 +24,6 @@ public interface HomestayDTO {
 
     Long getVersion();
 
-    Double getNightAmount();
-
     Double getTotalAmount();
 
     String getAddress();

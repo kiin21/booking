@@ -1,7 +1,7 @@
 -- Drop all in correct order
 DROP TABLE IF EXISTS
-    homestay_amenities,
-    homestay_availabilities,
+    homestays_amenities,
+    homestays_availabilities,
     amenities,
     bookings,
     profiles,
@@ -12,8 +12,9 @@ DROP TABLE IF EXISTS
     provinces
     CASCADE;
 
--- Enable PostGIS
+-- Extensions
 CREATE EXTENSION IF NOT EXISTS postgis;
+
 
 -- Provinces
 CREATE TABLE IF NOT EXISTS provinces
@@ -63,7 +64,7 @@ CREATE TABLE IF NOT EXISTS users
 -- Profiles
 CREATE TABLE IF NOT EXISTS profiles
 (
-    user_id    BIGINT PRIMARY KEY REFERENCES users (id),
+    user_id    BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY REFERENCES users (id),
     avatar     TEXT,
     work       TEXT,
     about      TEXT,
@@ -109,8 +110,8 @@ CREATE INDEX IF NOT EXISTS idx_homestays_geom ON homestays USING gist (geom);
 CREATE TABLE IF NOT EXISTS bookings
 (
     id            BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id       BIGINT   NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    homestay_id   BIGINT   NOT NULL REFERENCES homestays (id) ON DELETE CASCADE,
+    user_id       BIGINT     NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    homestay_id   BIGINT     NOT NULL REFERENCES homestays (id) ON DELETE CASCADE,
     checkin_date  DATE     NOT NULL,
     checkout_date DATE     NOT NULL,
     guests        SMALLINT NOT NULL,
@@ -132,10 +133,10 @@ CREATE TABLE IF NOT EXISTS bookings
 );
 
 -- Homestay Availabilities
-CREATE TABLE IF NOT EXISTS homestay_availabilities
+CREATE TABLE IF NOT EXISTS homestays_availabilities
 (
     homestay_id BIGINT NOT NULL REFERENCES homestays (id) ON DELETE CASCADE,
-    date        DATE   NOT NULL,
+    date        DATE NOT NULL,
     price       NUMERIC,
     status      SMALLINT,
     PRIMARY KEY (homestay_id, date)
@@ -150,9 +151,9 @@ CREATE TABLE IF NOT EXISTS amenities
 );
 
 -- Homestay Amenities (N-N)
-CREATE TABLE IF NOT EXISTS homestay_amenities
+CREATE TABLE IF NOT EXISTS homestays_amenities
 (
-    homestay_id BIGINT  NOT NULL REFERENCES homestays (id) ON DELETE CASCADE,
+    homestay_id BIGINT    NOT NULL REFERENCES homestays (id) ON DELETE CASCADE,
     amenity_id  INTEGER NOT NULL REFERENCES amenities (id),
     PRIMARY KEY (homestay_id, amenity_id)
 );

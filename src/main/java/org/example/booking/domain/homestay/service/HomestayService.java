@@ -23,15 +23,14 @@ public class HomestayService {
     private final HomestayRepository repository;
 
     public Homestay getHomestayById(Long id) {
-        var homestay = repository.findById(id).orElse(null);
-        return homestay;
+        return repository.findById(id).orElse(null);
     }
 
     public List<HomestayDTO> searchHomestays(HomestaySearchRequest request) {
         request.setStatus(AvailabilityStatus.AVAILABLE);
 
-        var checkinDate = request.getCheckinDate();
-        var checkoutDate = request.getCheckoutDate();
+        LocalDate checkinDate = request.getCheckinDate();
+        LocalDate checkoutDate = request.getCheckoutDate();
 
         if (request.getCheckinDate().isAfter(request.getCheckoutDate())
                 || request.getCheckinDate().isBefore(LocalDate.now())) {
@@ -39,9 +38,8 @@ public class HomestayService {
         }
 
         int nights = (int) DateUtil.getDiffInDays(checkinDate, checkoutDate);
-        checkoutDate = checkoutDate.minusDays(1);
 
-        var homestays = repository.searchHomestay(
+        return repository.searchHomestay(
                 request.getLongitude(),
                 request.getLatitude(),
                 request.getRadius(),
@@ -50,7 +48,5 @@ public class HomestayService {
                 nights,
                 request.getGuests(),
                 request.getStatus().getValue());
-
-        return homestays;
     }
 }

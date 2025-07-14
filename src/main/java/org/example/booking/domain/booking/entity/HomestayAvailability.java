@@ -9,9 +9,8 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-
 @Entity
-@Table(name = "homestay_availabilities")
+@Table(name = "homestays_availabilities")
 @IdClass(HomestayAvailabilityId.class)
 @RequiredArgsConstructor
 @AllArgsConstructor

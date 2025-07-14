@@ -30,5 +30,4 @@ public class Meta {
 
     @JsonProperty("extra_meta")
     private Map<String, Object> extraMeta;
-
 }

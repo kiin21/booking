@@ -3,18 +3,9 @@ package org.example.booking.infrastructure.util;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
+import java.util.Calendar;
 
 public class DateUtil {
-    protected static final SimpleDateFormat ISO_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
-    public static Date parseISO(String date) {
-        try {
-            return ISO_DATE_FORMAT.parse(date);
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
     public static long getDiffInDays(LocalDate date1, LocalDate date2) {
         return ChronoUnit.DAYS.between(date1, date2);
@@ -24,9 +15,19 @@ public class DateUtil {
         return LocalDate.parse(date);
     }
 
-//    public static void main(String[] agrs) {
-//        LocalDate date1 = LocalDate.parse("2022-06-12");
-//        LocalDate date2 = LocalDate.parse("2022-06-15");
-//        System.out.println(getDiffInDays(date1, date2));
+    public static String formatVnTime(Calendar date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        return sdf.format(date.getTime());
+    }
+
+//    public static void main(String[] args) {
+//        // Example usage
+//        LocalDate date1 = LocalDate.of(2023, 10, 1);
+//        LocalDate date2 = LocalDate.of(2023, 10, 10);
+//        long daysBetween = getDiffInDays(date1, date2);
+//        System.out.println("Days between: " + daysBetween); // Output: Days between: 9
+//
+//        String formattedDate = formatVnTime(Calendar.getInstance());
+//        System.out.println("Formatted VN Time: " + formattedDate);
 //    }
 }

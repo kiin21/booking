@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public class HomestayAvailabilityId implements Serializable {
