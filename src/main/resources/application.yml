@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: booking
+  datasource:
+    url: jdbc:postgresql://localhost:5432/booking_database
+    username: user
+    password: pass
+    jpa:
+      show-sql: true
+      hibernate:
+        ddl-auto: none
