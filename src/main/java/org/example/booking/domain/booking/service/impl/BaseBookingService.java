@@ -102,7 +102,8 @@ public class BaseBookingService implements BookingService {
         final var availableDays = availabilityService.checkAvailabilityForBooking(
                 booking.getHomestayId(),
                 booking.getCheckinDate(),
-                booking.getCheckoutDate()
+                booking.getCheckoutDate(),
+                AvailabilityStatus.HELD.getValue()
         );
 
         booking.setStatus(BookingStatus.BOOKED.getValue());
