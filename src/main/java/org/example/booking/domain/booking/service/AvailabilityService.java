@@ -25,6 +25,14 @@ public class AvailabilityService {
     public List<HomestayAvailability> checkAvailabilityForBooking(final Long homestayId,
                                                                   final LocalDate checkinDate,
                                                                   final LocalDate checkoutDate) {
+        return checkAvailabilityForBooking(homestayId, checkinDate, checkoutDate,
+                AvailabilityStatus.AVAILABLE.getValue());
+    }
+
+    public List<HomestayAvailability> checkAvailabilityForBooking(final Long homestayId,
+                                                                  final LocalDate checkinDate,
+                                                                  final LocalDate checkoutDate,
+                                                                  final Integer status) {
 
         final int nights = (int) DateUtil.getDiffInDays(checkinDate, checkoutDate);
         if (nights > NIGHT_MAX) {
@@ -33,7 +41,7 @@ public class AvailabilityService {
 
         final List<HomestayAvailability> availableDays = availabilityRepository.findAndLockHomestayAvailability(
                 homestayId,
-                AvailabilityStatus.AVAILABLE.getValue(),
+                status,
                 checkinDate,
                 checkoutDate
         );
